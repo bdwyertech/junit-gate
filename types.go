@@ -4,11 +4,6 @@ package main
 
 import (
 	"encoding/xml"
-	//	"strings"
-	//	"time"
-	//
-	//	"github.com/araddon/dateparse"
-	"github.com/joshdk/go-junit"
 )
 
 type TestSuites struct {
