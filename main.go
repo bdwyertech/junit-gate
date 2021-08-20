@@ -1,3 +1,10 @@
+// Encoding: UTF-8
+//
+// JUnit Gate
+//
+// Copyright © 2021 Brian Dwyer - Intelligent Digital Services
+//
+
 package main
 
 import (
@@ -12,10 +19,30 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-var fileFlag = flag.String("f", "", "Path to the Junit XML file")
+var fileFlag string
+
+func init() {
+	flag.StringVar(&fileFlag, "f", "", "Path to the Junit XML file")
+}
 
 func main() {
+	// Parse Flags
 	flag.Parse()
+
+	if versionFlag {
+		showVersion()
+		os.Exit(0)
+	}
+
+	if fileFlag == "" {
+		if len(os.Args) >= 2 {
+			fileFlag = os.Args[1]
+		} else {
+			flag.PrintDefaults()
+			os.Exit(1)
+		}
+	}
+
 	pwd, err := os.Getwd()
 	if err != nil {
 		log.Fatal(err)
@@ -32,7 +59,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	suites, err := junit.IngestFile(*fileFlag)
+	suites, err := junit.IngestFile(fileFlag)
 	if err != nil {
 		log.Fatalf("failed to ingest JUnit xml %v", err)
 	}
