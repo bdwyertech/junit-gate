@@ -1,0 +1,3 @@
+---
+exceptions:
+  - name: should default path to an empty string

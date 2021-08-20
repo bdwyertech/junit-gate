@@ -19,9 +19,11 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+var configPath string
 var fileFlag string
 
 func init() {
+	flag.StringVar(&configPath, "c", "", "Path to junit-gate config file")
 	flag.StringVar(&fileFlag, "f", "", "Path to the Junit XML file")
 }
 
@@ -43,12 +45,16 @@ func main() {
 		}
 	}
 
-	pwd, err := os.Getwd()
-	if err != nil {
-		log.Fatal(err)
+	if configPath == "" {
+		pwd, err := os.Getwd()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		configPath = filepath.Join(pwd, ".junit-gate.yml")
 	}
 
-	yamlFile, err := os.ReadFile(filepath.Join(pwd, ".junit-gate.yml"))
+	yamlFile, err := os.ReadFile(configPath)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -148,7 +154,7 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		log.Fatalln("Exceptions:", string(b))
+		log.Infoln("Exceptions:", string(b))
 	}
 
 	if len(result.Errors) > 0 {
