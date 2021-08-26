@@ -4,6 +4,11 @@ package main
 
 import (
 	"encoding/xml"
+	"time"
+
+	log "github.com/sirupsen/logrus"
+
+	"github.com/araddon/dateparse"
 )
 
 type TestSuites struct {
@@ -39,7 +44,7 @@ type TestSuites struct {
 }
 
 type Config struct {
-	Exceptions []Exception `yaml:"exceptions"`
+	ExceptionList []*Exception `yaml:"exceptions"`
 }
 
 type Exception struct {
@@ -54,6 +59,7 @@ type Exception struct {
 	// Global
 	Expires     string `json:",omitempty" yaml:"expires,omitempty"`
 	Description string `json:",omitempty" yaml:"description,omitempty"`
+	expired     bool
 }
 
 type ExceptionMatch struct {
@@ -65,4 +71,32 @@ type ExceptionMatch struct {
 type Result struct {
 	Exceptions []ExceptionMatch
 	Errors     []interface{}
+}
+
+func (c *Config) Exceptions() (e []Exception) {
+	for _, exception := range c.ExceptionList {
+		if !exception.Expired() {
+			e = append(e, *exception)
+		}
+	}
+	return
+}
+
+func (e *Exception) Expired() (expired bool) {
+	if e.expired {
+		return true
+	}
+	if e.Expires == "" {
+		return
+	}
+	d, err := dateparse.ParseAny(e.Expires)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if d.Before(time.Now()) {
+		log.Warnln("Exception Expired:", e)
+		e.expired = true
+		return true
+	}
+	return
 }

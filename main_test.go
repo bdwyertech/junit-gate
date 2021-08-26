@@ -33,6 +33,15 @@ func TestJenkinsExclusions(t *testing.T) {
 	assert.NotPanics(t, main, "Jenkins should not error")
 }
 
+func TestJenkinsExpiredExclusions(t *testing.T) {
+	patch := monkey.Patch(os.Exit, testExit)
+	defer patch.Unpatch()
+
+	configPath = "test/fixtures/jenkins-name-expired.yml"
+	fileFlag = "test/fixtures/jenkins.xml"
+	assert.Panics(t, main, "Jenkins should error")
+}
+
 func TestBasic(t *testing.T) {
 	patch := monkey.Patch(os.Exit, testExit)
 	defer patch.Unpatch()

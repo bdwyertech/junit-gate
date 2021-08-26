@@ -79,7 +79,7 @@ func main() {
 			evalSuite(s)
 		}
 		// Check if suite is excluded
-		for _, exception := range config.Exceptions {
+		for _, exception := range config.Exceptions() {
 			if exception.Classname == "" && exception.Name == "" {
 				if exception.Suite == "" && exception.Package == "" {
 					log.Fatalln("Invalid Exception:", exception)
@@ -99,7 +99,7 @@ func main() {
 		for _, test := range suite.Tests {
 			if test.Error != nil {
 				var excluded bool
-				for _, exception := range config.Exceptions {
+				for _, exception := range config.Exceptions() {
 					// Check if the exception is scoped to a specific Suite or Package
 					if (exception.Suite != "" && exception.Suite != suite.Name) || (exception.Package != "" && exception.Package != suite.Package) {
 						continue

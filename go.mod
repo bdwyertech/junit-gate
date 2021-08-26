@@ -4,6 +4,7 @@ go 1.17
 
 require (
 	bou.ke/monkey v1.0.2
+	github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de
 	github.com/joshdk/go-junit v0.0.0-20210226021600-6145f504ca0d
 	github.com/sirupsen/logrus v1.8.1
 	github.com/stretchr/testify v1.7.0

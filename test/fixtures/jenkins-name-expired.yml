@@ -1,0 +1,4 @@
+---
+exceptions:
+  - name: should default path to an empty string
+    expires: 12/1/20
