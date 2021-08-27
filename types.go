@@ -100,3 +100,20 @@ func (e *Exception) Expired() (expired bool) {
 	}
 	return
 }
+
+func (e *Exception) PropertiesMatch(props map[string]string) bool {
+	if e.Properties != nil {
+		for k, v := range e.Properties {
+			if val, ok := props[k]; ok {
+				if v != val {
+					log.Debugln("Value mismatch:", k, v, val)
+					return false
+				}
+			} else {
+				log.Debugln("Key Missing:", k)
+				return false
+			}
+		}
+	}
+	return true
+}

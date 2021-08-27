@@ -106,18 +106,8 @@ func main() {
 						continue
 					}
 					// Compare Properties
-					if exception.Properties != nil {
-						for k, v := range exception.Properties {
-							if val, ok := test.Properties[k]; ok {
-								if v != val {
-									log.Debugln("Value mismatch:", k, v, val)
-									continue
-								}
-							} else {
-								log.Debugln("Key Missing:", k)
-								continue
-							}
-						}
+					if !exception.PropertiesMatch(test.Properties) && !exception.PropertiesMatch(suite.Properties) {
+						continue
 					}
 
 					if test.Name == exception.Name {
@@ -130,6 +120,10 @@ func main() {
 						excluded = true
 						result.Exceptions = append(result.Exceptions, ExceptionMatch{exception, test, "Classname Match"})
 						break
+					} else if exception.Suite != "" && exception.Properties != nil && exception.Suite == suite.Name && exception.PropertiesMatch(test.Properties) {
+						log.Debugln("Test excluded by Suite & Properties!", suite.Name)
+						excluded = true
+						result.Exceptions = append(result.Exceptions, ExceptionMatch{exception, test, "Suite & Properties Match"})
 					}
 				}
 
