@@ -22,15 +22,22 @@ import (
 
 var configPath string
 var fileFlag string
+var debugFlag bool
 
 func init() {
 	flag.StringVar(&configPath, "c", "", "Path to junit-gate config file")
 	flag.StringVar(&fileFlag, "f", "", "Path to the Junit XML file")
+	flag.BoolVar(&debugFlag, "debug", false, "Enable verbose log output")
 }
 
 func main() {
 	// Parse Flags
 	flag.Parse()
+
+	if debugFlag {
+		log.SetLevel(log.DebugLevel)
+		log.SetReportCaller(true)
+	}
 
 	if versionFlag {
 		showVersion()
