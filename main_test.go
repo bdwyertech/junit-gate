@@ -59,3 +59,12 @@ func TestBasicExceptions(t *testing.T) {
 	fileFlag = "test/fixtures/basic.xml"
 	assert.NotPanics(t, main, "Basic should not error")
 }
+
+func TestBasicExpirationRequired(t *testing.T) {
+	patch := monkey.Patch(os.Exit, testExit)
+	defer patch.Unpatch()
+
+	configPath = "test/fixtures/basic-expiration-required.yml"
+	fileFlag = "test/fixtures/basic.xml"
+	assert.Panics(t, main, "Basic should error because no expiration is set")
+}

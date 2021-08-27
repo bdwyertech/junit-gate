@@ -1,0 +1,4 @@
+---
+require_expiration: true
+exceptions:
+  - classname: JUnitXmlReporter.constructor

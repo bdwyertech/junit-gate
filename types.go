@@ -44,7 +44,8 @@ type TestSuites struct {
 }
 
 type Config struct {
-	ExceptionList []*Exception `yaml:"exceptions"`
+	ExceptionList     []*Exception `yaml:"exceptions"`
+	RequireExpiration bool         `yaml:"require_expiration"`
 }
 
 type Exception struct {
@@ -75,6 +76,10 @@ type Result struct {
 
 func (c *Config) Exceptions() (e []Exception) {
 	for _, exception := range c.ExceptionList {
+		if c.RequireExpiration && exception.Expires == "" {
+			log.Debugln("Skipping exception because require_expiration: true and no expiration date is set:", exception)
+			continue
+		}
 		if !exception.Expired() {
 			e = append(e, *exception)
 		}
