@@ -12,6 +12,7 @@ import (
 	"flag"
 	"os"
 	"path/filepath"
+	"strings"
 
 	log "github.com/sirupsen/logrus"
 
@@ -124,7 +125,7 @@ func main() {
 						excluded = true
 						result.Exceptions = append(result.Exceptions, ExceptionMatch{exception, test, "Name Match"})
 						break
-					} else if exception.Name == "" && exception.Classname == test.Classname {
+					} else if exception.Name == "" && strings.HasPrefix(test.Classname, exception.Classname) {
 						log.Debugln("Test excluded by Classname!", test.Classname)
 						excluded = true
 						result.Exceptions = append(result.Exceptions, ExceptionMatch{exception, test, "Classname Match"})
