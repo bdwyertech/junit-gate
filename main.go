@@ -39,6 +39,11 @@ func main() {
 		log.SetReportCaller(true)
 	}
 
+	// Pretty Print within GitLab CI
+	if _, ci := os.LookupEnv("GITLAB_CI"); ci {
+		log.SetFormatter(&log.TextFormatter{ForceColors: true})
+	}
+
 	if versionFlag {
 		showVersion()
 		os.Exit(0)
