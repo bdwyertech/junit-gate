@@ -2,13 +2,12 @@
 //
 // JUnit Gate
 //
-// Copyright © 2021 Brian Dwyer - Intelligent Digital Services
+// Copyright © 2022 Brian Dwyer - Intelligent Digital Services
 //
 
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"os"
 	"path/filepath"
@@ -16,6 +15,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
+	"github.com/fatih/color"
 	"github.com/joshdk/go-junit"
 	"gopkg.in/yaml.v3"
 )
@@ -28,6 +28,12 @@ func init() {
 	flag.StringVar(&configPath, "c", "", "Path to junit-gate config file")
 	flag.StringVar(&fileFlag, "f", "", "Path to the Junit XML file")
 	flag.BoolVar(&debugFlag, "debug", false, "Enable verbose log output")
+
+	// Pretty Print within GitLab CI
+	if _, ci := os.LookupEnv("GITLAB_CI"); ci {
+		color.NoColor = false
+		log.SetFormatter(&log.TextFormatter{ForceColors: true})
+	}
 }
 
 func main() {
@@ -37,11 +43,6 @@ func main() {
 	if debugFlag {
 		log.SetLevel(log.DebugLevel)
 		log.SetReportCaller(true)
-	}
-
-	// Pretty Print within GitLab CI
-	if _, ci := os.LookupEnv("GITLAB_CI"); ci {
-		log.SetFormatter(&log.TextFormatter{ForceColors: true})
 	}
 
 	if versionFlag {
@@ -157,18 +158,10 @@ func main() {
 	}
 
 	if len(result.Exceptions) > 0 {
-		b, err := json.MarshalIndent(result.Exceptions, "", "  ")
-		if err != nil {
-			log.Fatal(err)
-		}
-		log.Infoln("Exceptions:", string(b))
+		log.Infoln("Exceptions:", prettyJson(result.Exceptions))
 	}
 
 	if len(result.Errors) > 0 {
-		b, err := json.MarshalIndent(result.Errors, "", "  ")
-		if err != nil {
-			log.Fatal(err)
-		}
-		log.Fatalln("Failures:", string(b))
+		log.Fatalln("Failures:", prettyJson(result.Errors))
 	}
 }
