@@ -10,8 +10,9 @@ package main
 import (
 	"encoding/json"
 
-	"github.com/TylerBrock/colorjson"
 	log "github.com/sirupsen/logrus"
+
+	"github.com/TylerBrock/colorjson"
 )
 
 func prettyJson(i interface{}) string {
