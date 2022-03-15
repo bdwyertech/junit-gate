@@ -25,8 +25,8 @@ var fileFlag string
 var debugFlag bool
 
 func init() {
-	flag.StringVar(&configPath, "c", "", "Path to junit-gate config file")
-	flag.StringVar(&fileFlag, "f", "", "Path to the Junit XML file")
+	flag.StringVar(&configPath, "c", os.Getenv("JUNIT_GATE_CONFIG"), "Path to junit-gate config file")
+	flag.StringVar(&fileFlag, "f", os.Getenv("JUNIT_GATE_XML"), "Path to the Junit XML file")
 	flag.BoolVar(&debugFlag, "debug", false, "Enable verbose log output")
 
 	// Pretty Print within GitLab CI
